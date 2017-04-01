@@ -1,6 +1,8 @@
 
 # --------------------------------------------------------------------
-#  Makefile uso_cadena
+#  Makefile uso_cadena 
+
+ # DE MOMENTO SOLO SE COMPILA, el testing esta por verse..  :)
 
 
 # Objetivos que no son archivos.
@@ -23,7 +25,7 @@ clean_bin:
 	@rm -f test_uso_cadena ../../obj/*.o
 	
 	# principal
-principal: clean_bin test_uso_cadena
+principal: clean_bin uso_cadena.o
 
 
 
@@ -44,13 +46,13 @@ cadena.o: ../../plantillas/plantilla_cadena.cpp ../../include/cadena.hpp texto.o
 uso_cadena.o: ../../cpp/uso_cadena.cpp ../../include/uso_cadena.hpp cadena.o info.o texto.o utils.o
 	$(CC) $(CCFLAGS) -c ../../cpp/uso_cadena.cpp -o ../../obj/uso_cadena.o
 
-test_uso_cadena.o: utils.o texto.o info.o cadena.o uso_cadena.o 
-	$(CC) $(CCFLAGS) -c test_uso_cadena.cpp -o test_uso_cadena.o
+#test_uso_cadena.o: utils.o texto.o info.o cadena.o uso_cadena.o 
+#	$(CC) $(CCFLAGS) -c test_uso_cadena.cpp -o test_uso_cadena.o
 
 
 #Principal
-test_uso_cadena: utils.o texto.o info.o cadena.o uso_cadena.o test_uso_cadena.o
-	$(CC) $(CCFLAGS) ../../obj/uso_cadena.o  ../../obj/cadena.o ../../obj/texto.o ../../obj/info.o test_uso_cadena.o -o test_uso_cadena
+#test_uso_cadena: utils.o texto.o info.o cadena.o uso_cadena.o test_uso_cadena.o
+#	$(CC) $(CCFLAGS) ../../obj/uso_cadena.o  ../../obj/cadena.o ../../obj/texto.o ../../obj/info.o test_uso_cadena.o -o test_uso_cadena
 
 
 

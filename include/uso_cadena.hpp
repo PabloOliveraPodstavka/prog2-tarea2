@@ -27,6 +27,7 @@ nat longitud(cadena cad);
 /*  Devuelve la cantidad de elementos de `cad' cuyo dato numérico es `i'. */
 nat cantidad(int i, cadena cad);
 
+
 /*
   Devuelve `true' si y sólo si los datos numéricos de los elementos de `l1'
   son iguales uno a uno con los de los elementos de `l2' (es decir, son los

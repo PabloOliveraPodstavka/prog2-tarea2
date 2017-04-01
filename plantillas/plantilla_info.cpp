@@ -1,4 +1,4 @@
-/* 4424601 - 5015357
+/*
   Módulo de implementación de `info'.
 
   Laboratorio de Programación 2.
@@ -18,44 +18,21 @@ struct rep_info {
 };
 
 /*
-  Devuelve un `info_t' tal que su dato numérico es `n' y su dato de texto
-  es `t'.
- */
 info_t crear_info(const int n, const texto_t t) {
-  info_t nuevo_info = new rep_info;
-  
-  nuevo_info->numero=n;
-  nuevo_info->texto=t;
-  
-  return nuevo_info;
 }
 
-/* Libera la memoria reservada por `i'. */
 void liberar_info(info_t &i) {
-  delete i;
 }
 
-/* Devuelve el dato numérico asociado a `i'. */
 int numero_info(const info_t i) {
-  return i->numero;
 }
 
-/*  Devuelve el dato de texto asociado a `i'. */
 texto_t texto_info(const info_t i) {
-  return i->texto;
 }
 
-/*
-  Devuelve `true' si y sólo si `i' es válida.
-  `i' no es válida cuando su valor numérico es INT_MAX.
- */
 bool es_valida_info(const info_t i) {
-  if(i->numero == INT_MAX){
-    return false;
-  }else{
-    return true;
-  }
 }
+*/
 
 /*
   Devuelve un texto_t formado por la concatenacion del dato numerico de `i',

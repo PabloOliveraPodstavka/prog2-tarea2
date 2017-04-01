@@ -197,7 +197,7 @@ info_t info_cadena(localizador loc, cadena cad);
 
 /*
   Sustituye con `i' el elemento de `cad' al que se accede con `loc'.
-xo  No destruye el elemento al que antes se accedía con `loc'.
+  No destruye el elemento al que antes se accedía con `loc'.
   Precondición: ! es_vacia_cadena(cad) y localizador_pertenece_a_cadena(loc,
   cad).
  */
