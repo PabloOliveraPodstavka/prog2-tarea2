@@ -273,7 +273,6 @@ void ordenar(cadena &cad) {
        cad_orig = siguiente(cad_orig); //sigo avanzando en la cadena original
     }
     
-    
   }
   
 }
@@ -311,8 +310,33 @@ void unificar(cadena &cad) {
   La cadena resultado no comparte memoria ni con `l1' ni con `l2'.
   Precondición: esta_ordenada (l1) y esta_ordenada (l2).
  */
-/*cadena mezcla(cadena l1, cadena l2) {
-}*/
+cadena mezcla(cadena l1, cadena l2) {
+  
+  /* Al estar ambas cadenas ordenadas, voy recorriendo una a una y comparando
+     La que es menor la agrego a la nueva lista, y avanzo un lugar en esa cadena.
+  */
+  
+   cadena nueva_cadena = crear_cadena(); //cadena resultado de la mezcla
+  
+   localizador loc_1 = inicio_cadena(l1);
+   localizador loc_2 = inicio_cadena(l2);
+   
+   while(es_localizador_cadena(loc_1) || es_localizador_cadena(loc_2)){ //mientras haya al menos un elemento en ambas cadenas
+   
+     //Si no hay mas en l1, relleno la nueva cadena con l2
+     if(!es_localizador_cadena(loc_1)){
+       insertar_despues(info_t i, localizador loc, cadena &cad);
+     }
+     
+     
+     
+     
+     
+     
+   }
+  
+  return nueva_cadena;
+}
 
 /*
   13)
