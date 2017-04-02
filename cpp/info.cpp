@@ -33,6 +33,7 @@ info_t crear_info(const int n, const texto_t t) {
 /* Libera la memoria reservada por `i'. */
 void liberar_info(info_t &i) {
   delete i;
+  i=NULL;
 }
 
 /* Devuelve el dato numérico asociado a `i'. */
@@ -99,6 +100,13 @@ texto_t info_a_texto(info_t i) {
   Precondición: hay texto para leer, que no incluye el símbolo `)' y tiene a
   lo sumo `max' caracteres.
  */
+/*
+  Lee texto desde la entrada estándar. Si tiene formato de `info_t' (ver
+  info_a_texto) lo devuelve convertido en `info_t'. En otro caso devuelve una
+  `info_t' con un  dato numérico = INT_MAX y dato de texto vacío.
+  Precondición: hay texto para leer, que no incluye el símbolo `)' y tiene a
+  lo sumo `max' caracteres.
+ */
 info_t leer_info(nat max) {
   info_t res;
   int num;
@@ -113,7 +121,7 @@ info_t leer_info(nat max) {
     // busca un entero (que aloja en `num'), una coma, una cadena que no
     // incluya el paréntesis de cierre (que aloja en `cadena') y un
     // paréntesis de cierre.
-    scanf("%d,%[^)]) )", &num, cadena);
+    scanf("%d,%[^)] )", &num, cadena);
     res = crear_info(num, array_a_texto(cadena));
   }
   return res;
