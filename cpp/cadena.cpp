@@ -334,17 +334,17 @@ cadena segmento_cadena(localizador desde, localizador hasta, cadena cad)
 	cadena res = crear_cadena();
 	if (!es_vacia_cadena(cad))
 	{
-	localizador loc = desde;
-    while (loc != siguiente(hasta, cad)) {
+    while (desde != siguiente(hasta, cad))
+    {
       // ERROR: compartiría memoria
-      // info_t info = loc->dato;
+      // info_t info = desde->dato;
 	  
       // ERROR: compartiría memoria
-      // info_t info = crear_info(numero_info(loc->dato),
-      // texto_info(loc->dato));
-      info_t info = crear_info(numero_info(loc->dato), copiar_texto(texto_info(loc->dato)));
+      // info_t info = crear_info(numero_info(desde->dato),
+      // texto_info(desde->dato));
+      info_t info = crear_info(numero_info(desde->dato), copiar_texto(texto_info(desde->dato)));
       insertar_despues(info, final_cadena(res), res);
-      loc = siguiente(loc, cad);
+      desde = siguiente(desde, cad);
     }
   }
   return res;
@@ -395,13 +395,32 @@ cadena separar_segmento(localizador desde, localizador hasta, cadena &cad)
 	cadena cadNueva = crear_cadena();
 	if (!es_vacia_cadena(cad))
 	{
-		/* (!!) ver donde controlar su desde, hasta precede */
 		// asigno inicio y final de cadNueva
 		cadNueva->inicio = desde;
 		cadNueva->final = hasta;
-		// Enlazo los nodos de cad "saltando" desde y hasta
+		
+		// Enlazo los nodos de cad, verificando si desde o hasta son inicio o final de cadena respectivamente
+		// Modifico el inicio y final de cad
+		if (es_inicio_cadena(desde, cad))
+		{
+		  // Como el segmente va desde el inicio, cad->inicio es el siguiente a donde finaliza el segmento
+		  cad->inicio = siguiente(hasta,cad);
+		  // Ajusto el noto anterior a inicio cad
+		  cad->inicio->anterior = NULL;
+		}
+		else
+		{
+		  // El inicio de cadena ahora será el nodo anterior a desde
+		  cad->inicio = anterior(desde,cad);
+		  // El nodo siguiente será el siguiente al final del segmento
+		  cad->inicio->siguiente = siguiente(hasta, cad);
+		}
 		desde->anterior->siguiente = hasta->siguiente;
 		hasta->siguiente->anterior = desde->anterior;
+		
+		//Modifico el inicio y y final de la cadena nueva
+		cadNueva->inicio->anterior = NULL;
+		cadNueva->final->siguiente = NULL;
 	}
 	return cadNueva;
 } // fin separar_segmento
