@@ -837,7 +837,7 @@ void test_uso_cadena(){
 	
 	
     /*
-      6) 
+      6)  ANDA OK!!!!
       Devuelve el resultado de concatenar `l2' después de `l1'.
       La cadena resultado no comparte memoria ni con `l1' ni con `l2'.
     */
@@ -865,6 +865,12 @@ void test_uso_cadena(){
 	cadena concat2 = concatenar(concat1, cad_test_6_3);
 	puts("Cadena resultante de concatenar las cadenas 1 y 2, concatenada con cadena 3: ");
 	imprimir_cadena(concat2);
+	
+	cadena cad_vacia_1 = crear_cadena();
+	cadena cad_vacia_2 = crear_cadena();
+	puts("Cadena resultante de concatenar dos cadenas vacias ");
+	cadena concat3 = concatenar(cad_vacia_1, cad_vacia_2);
+	imprimir_cadena(concat3);
 	puts("------------------------------------------");
 	puts("FIN TEST CONCATENAR");
 	puts("##########################################\n");
