@@ -12,7 +12,6 @@
 #include "../include/uso_cadena.hpp"
 
 
-
 /*
   1) 
   Devuelve `true' si en `cad' hay un elemento cuyo dato numérico es `i',
@@ -39,6 +38,7 @@ bool pertenece(int i, cadena cad) {
 /* 2)
   Devuelve la cantidad de elementos de `cad'. */
 nat longitud(cadena cad) {
+  
   nat cant = 0;
   
   localizador loc = inicio_cadena(cad); //parto desde el inicio de la cadena
@@ -129,7 +129,6 @@ bool esta_ordenada(cadena cad) {
   return res;
 }
 
-
 /*
   6) 
   Devuelve el resultado de concatenar `l2' después de `l1'.
@@ -139,21 +138,29 @@ cadena concatenar(cadena l1, cadena l2) {
   
   //Como no comparten memoria, se crea una nueva cadena.
   cadena nueva_cadena = crear_cadena();
-  
+
   //Primero se copian los elementos de l1
   localizador loc_l1 = inicio_cadena(l1);
-  
   while(es_localizador_cadena(loc_l1)){
-   insertar_despues(info_cadena(loc_l1, l1), loc_l1, nueva_cadena);
-   loc_l1 = siguiente(loc_l1, l1);
+     localizador ultimo_nueva_cadena = final_cadena(nueva_cadena);
+     
+     info_t info_cad1 = crear_info(numero_info(info_cadena(loc_l1,l1)), copiar_texto(texto_info(info_cadena(loc_l1,l1))));
+     
+     insertar_despues(info_cad1, ultimo_nueva_cadena, nueva_cadena);
+     
+     loc_l1 = siguiente(loc_l1, l1);
   }
   
-  //Luego se copian los elementos de l2
+  // Luego se copian los elementos de l2
   localizador loc_l2 = inicio_cadena(l2);
-  
   while(es_localizador_cadena(loc_l2)){
-   insertar_despues(info_cadena(loc_l2, l2), loc_l2, nueva_cadena);
-   loc_l2 = siguiente(loc_l2, l2);
+     localizador ultimo_nueva_cadena = final_cadena(nueva_cadena);
+     
+     info_t info_cad2 = crear_info(numero_info(info_cadena(loc_l2,l2)), copiar_texto(texto_info(info_cadena(loc_l2,l2))));
+     
+     insertar_despues(info_cad2, ultimo_nueva_cadena, nueva_cadena);
+     
+     loc_l2 = siguiente(loc_l2, l2);
   }
   
   return nueva_cadena;
@@ -174,7 +181,12 @@ cadena reversa(cadena cad) {
   localizador loc = final_cadena(cad);
   
   while(es_localizador_cadena(loc)){
-   insertar_despues(info_cadena(loc, cad), loc, nueva_cadena);
+   localizador ultimo_nueva_cadena = final_cadena(nueva_cadena);
+   
+   //Se obtiene la info nueva
+   info_t info = crear_info(numero_info(info_cadena(loc,cad)), copiar_texto(texto_info(info_cadena(loc,cad))));
+   
+   insertar_despues(info, ultimo_nueva_cadena, nueva_cadena);
    loc = anterior(loc, cad);
   }
   
@@ -197,13 +209,20 @@ localizador primer_mayor(localizador loc, cadena cad) {
   int dato_num_loc = numero_info(info_cadena(loc, cad));
   bool encontrado = false;
   
-  while(es_localizador_cadena(loc_cad) && !encontrado){
-   int dato_num = numero_info(info_cadena(loc_cad, cad));
-   if(dato_num > dato_num_loc){
-     encontrado = true;
-   }else{
+  // Se le agrega que loc_cad sea diferente a loc porque sino sigue evaluando el resto de la cadena
+  while(es_localizador_cadena(loc_cad) && (loc_cad != loc) && !encontrado)
+  {
+    // Dato numerico al que estoy accediendo para luego comparar
+    int dato_num = numero_info(info_cadena(loc_cad, cad));
+    // Evalúo si es mayor al dato numerico de loc
+    if(dato_num > dato_num_loc)
+    {
+      encontrado = true;
+    }
+    else
+    {
       loc_cad = siguiente(loc_cad, cad);
-   }
+    }
   }
   
   if(encontrado){
@@ -238,43 +257,33 @@ void retroceder(localizador loc, cadena &cad) {
   No se debe obtener ni devolver memoria de manera dinámica.
   Si es_vacia_cadena (cad) no hace nada.
  */
+
 void ordenar(cadena &cad) {
+
+  if(!es_vacia_cadena(cad)){// si es vacia, no hace nada
+    
+    localizador cad_ord = inicio_cadena(cad);  // ultimo puntero a fin sub-lista ordenada
+    
+    // Recorro la cedena original de izquierda a derecha    
+    while(es_localizador_cadena(cad_ord)){
+     
+      //localizador cad_ord_aux = cad_ord;
+      localizador ant = anterior(cad_ord, cad); //navego hacia la izquierda hasta encontrar un ordenado
   
-  localizador cad_orig = inicio_cadena(cad); //inicio de cadena original
-  
-  if(es_localizador_cadena(cad_orig)){//si es vacia, no hace nada
-    
-    
-    //INSERTION SORT
-    
-    //Recorro la cedena original de izquierda a derecha
-    while(es_localizador_cadena(cad_orig)){
-      
-      
-      localizador cad_ord = anterior(cad_orig, cad); //fin de cadena ordenada
-      bool ordenado = false;
-      
-       //Recorro el fragmento de cadena ordenada de derecha a izquierda
-      while(es_localizador_cadena(cad_ord) && !ordenado){
-        
-        /* si el elemento de la derecha, es mayor al de la izquierda.. 
-           swapeo hasta que quede ordenado
-        */
-        if(numero_info(info_cadena(cad_orig, cad)) > numero_info(info_cadena(cad_ord, cad))){
-          intercambiar(cad_orig, cad_ord, cad);
-          cad_ord = anterior(cad_orig, cad);
-        }else{
-          //ya esta ordenado y continuo
-          ordenado = true;
-        }
-      
-      }
-      
-       cad_orig = siguiente(cad_orig, cad); //sigo avanzando en la cadena original
+	bool ordenado = false;
+	while(es_localizador_cadena(ant) && !ordenado){
+		//si el anterior es mayor a cad_ord los swapeo
+		if(numero_info(info_cadena(ant, cad)) > numero_info(info_cadena(cad_ord, cad))){
+			intercambiar(ant, cad_ord, cad);	
+			cad_ord = ant;		
+		}else{
+			ordenado = true;
+		}
+		ant = anterior(ant, cad);
+	}      
+      cad_ord = siguiente(cad_ord, cad); // avanzo un lugar     
     }
-    
   }
-  
 }
 
 /*
@@ -291,16 +300,16 @@ void unificar(cadena &cad) {
     localizador sig_loc = siguiente(loc, cad);
 
     while (es_localizador_cadena(sig_loc)) {
-      if (numero_info(info_cadena(loc, cad)) ==
-          numero_info(info_cadena(sig_loc, cad)))
+      if (numero_info(info_cadena(loc, cad)) == numero_info(info_cadena(sig_loc, cad))){
         remover_de_cadena(sig_loc, cad);
-      else
-        loc = sig_loc;
+      }
+      else{
+         loc = sig_loc;
+      }
       sig_loc = siguiente(loc, cad);
     }
   }
 }
-
 
 /*
   Funcion privada, se usa en (mezcla, filtrar, subcadena)
@@ -310,13 +319,12 @@ void unificar(cadena &cad) {
   
 */
 void agregar_en_nueva_cadena(localizador loc, cadena cad, cadena &nueva_cadena) {
-
-  info_t info = info_cadena(loc, cad); //obtengo la info a crear
   
-  info_t nueva_info = crear_info( numero_info(info), texto_info(info));
+  info_t info = crear_info(numero_info(info_cadena(loc, cad)), copiar_texto(texto_info(info_cadena(loc, cad))));
+  
   localizador final = final_cadena(nueva_cadena); //obtengo el ultimo localizador de la nueva_cadena
-   
-  insertar_despues(nueva_info, final, nueva_cadena);
+  
+  insertar_despues(info, final, nueva_cadena);
 }
 
 /*
@@ -342,13 +350,13 @@ cadena mezcla(cadena l1, cadena l2) {
    while(es_localizador_cadena(loc_1) || es_localizador_cadena(loc_2)){ //mientras haya al menos un elemento en ambas cadenas
    
      // A)  Si no hay mas en l1, relleno la nueva cadena con l2, avanzo un lugar
-     if(!es_localizador_cadena(loc_1)){
+     if(!es_localizador_cadena(loc_1) && es_localizador_cadena(loc_2)){
        agregar_en_nueva_cadena(loc_2, l2, nueva_cadena);
        loc_2 = siguiente(loc_2, l2);
      }
      
       // B)  Si no hay mas en l2, relleno la nueva cadena con l1, avanzo un lugar
-     if(!es_localizador_cadena(loc_2)){
+     if(!es_localizador_cadena(loc_2) && es_localizador_cadena(loc_1)){
        agregar_en_nueva_cadena(loc_1, l1, nueva_cadena);
        loc_1 = siguiente(loc_1, l1);
      }
@@ -368,7 +376,6 @@ cadena mezcla(cadena l1, cadena l2) {
      }
      
    }
-  
   return nueva_cadena;
 }
 

@@ -32,8 +32,11 @@ info_t crear_info(const int n, const texto_t t) {
 
 /* Libera la memoria reservada por `i'. */
 void liberar_info(info_t &i) {
+  // Liberar memoria de texto
+  liberar_texto(i->texto);
+  //Liberar memoria de info_t
   delete i;
-  i=NULL;
+  i = NULL;
 }
 
 /* Devuelve el dato numérico asociado a `i'. */
@@ -51,7 +54,7 @@ texto_t texto_info(const info_t i) {
   `i' no es válida cuando su valor numérico es INT_MAX.
  */
 bool es_valida_info(const info_t i) {
-  if(i->numero == INT_MAX){
+  if (i->numero == INT_MAX){
     return false;
   }else{
     return true;

@@ -1,0 +1,5 @@
+insertar_cadena (100,dragon) (50,perro) (30,gallo) .
+ordenar_cadena
+recorrido
+liberar_cadena
+Fin

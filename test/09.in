@@ -1,0 +1,29 @@
+insertar_cadena (0,primero).
+recorrido
+insertar_cadena (40,tierra) .
+insertar_cadena (13,marte) .
+ordenar_cadena
+insertar_cadena (13,saturno) (27,pluton) .
+insertar_cadena (100, sol) .
+ordenar_cadena
+insertar_cadena (10, mercurio) (70, jupiter) (80, venus) .
+recorrido
+segmentos 0 13
+segmentos 10 27
+segmentos 90 100
+segmentos 0 100
+modificar_cadena 40 80
+modificar_cadena 0 100
+modificar_cadena 25 70
+modificar_cadena 70 25
+filtrado_cadena 27 <
+recorrido
+filtrado_cadena 100 >
+recorrido
+filtrado_cadena 0 =
+reversa_cadena 27 70
+modificar_cadena 70 27
+liberar_cadena
+recorrido
+insertar_cadena (1, sol) (4, tierra) .
+Fin

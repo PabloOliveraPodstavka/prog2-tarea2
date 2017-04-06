@@ -11,6 +11,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 // nodo con punteros al anterior y al siguiente
 struct nodo {
@@ -24,6 +25,18 @@ struct rep_cadena {
   nodo *inicio;
   nodo *final;
 };
+
+//Funciones Auxiliares
+/*
+  Funcion privada, liberar nodo
+  
+*/
+void liberar_nodo(localizador &loc) 
+{
+  liberar_info(loc->dato);
+  delete loc;
+}
+
 
 /*  Devuelve la cadena vacía (sin elementos). */
 cadena crear_cadena()
@@ -106,14 +119,7 @@ localizador siguiente(localizador loc, cadena cad)
 {
   if (!es_vacia_cadena(cad) && localizador_pertenece_a_cadena(loc, cad))
   {
-    if (es_final_cadena(loc, cad))
-    {
-      return NULL;
-    }
-    else
-    {
-      return loc->siguiente;
-    }
+    return loc->siguiente;
   }
   else
   {
@@ -131,14 +137,7 @@ localizador anterior(localizador loc, cadena cad)
 {
   if (!es_vacia_cadena(cad) and localizador_pertenece_a_cadena(loc, cad))
   {
-    if (es_inicio_cadena(loc, cad))
-    {
-      return NULL;
-    }
-    else
-    {
-      return loc->anterior;
-    }
+    return loc->anterior;
   }
   else
   {
@@ -205,26 +204,41 @@ bool precede_en_cadena(localizador l1, localizador l2, cadena cad)
  */
 void insertar_antes(info_t i, localizador loc, cadena &cad)
 {
+// Creo el nuevo nodo a insertar
   nodo *nuevo = new nodo;
+  // Asigno el dato
   nuevo->dato = i;
   if (es_vacia_cadena(cad))
   {
-    // nuevo es el único nodo, por lo que es el inicio y el final
+    // Si la cadena es vacia cad inicio y final es el nuevo nodo
     cad->inicio = cad->final = nuevo;
     nuevo->anterior = nuevo->siguiente = NULL;
   }
   else
   {
-    nuevo->siguiente = loc;
-    nuevo->anterior = anterior(loc, cad);
-    loc->anterior = nuevo;
-
     if (loc == inicio_cadena(cad))
+    {
+      // El siguiente a nuevo es loc
+      nuevo->siguiente = loc;
+      // El anterior a nuevo es NULL
+      nuevo->anterior = NULL;
+      // El anterior a loc es nuevo
+      loc->anterior = nuevo;
       cad->inicio = nuevo;
+    }
     else
+    {
+      // El siguiente a nuevo es loc
+      nuevo->siguiente = loc;
+      // El anterior a nuevo es loc->anterior
+      nuevo->anterior = loc->anterior;
+      // El anterior a loc es nuevo
+      loc->anterior = nuevo;
+      // El anterior de siguiente a loc es nuevo
       nuevo->anterior->siguiente = nuevo;
+    }
   }
-} // fin insertar_antes
+}  // fin insertar_antes
 
 /*
   Se inserta `i' como un nuevo elemento inmediatamente después de `loc'.
@@ -234,23 +248,40 @@ void insertar_antes(info_t i, localizador loc, cadena &cad)
  */
 void insertar_despues(info_t i, localizador loc, cadena &cad)
 {
+  // Creo el nuevo nodo a insertar
   nodo *nuevo = new nodo;
+  // Asigno el dato
   nuevo->dato = i;
   if (es_vacia_cadena(cad))
   {
+    // Si la cadena es vacia cad inicio y final es el nuevo nodo
     cad->inicio = cad->final = nuevo;
     nuevo->anterior = nuevo->siguiente = NULL;
   }
   else
   {
-    nuevo->siguiente = siguiente(loc, cad);
-    nuevo->anterior = loc;
-    loc->siguiente = nuevo;
-    
     if (loc == final_cadena(cad))
+    {
+      // El siguiente a nuevo es loc->siguiente
+      nuevo->siguiente = NULL;
+      // El anterior a nuevo es loc
+      nuevo->anterior = loc;
+      // El siguiente a loc es nuevo
+      loc->siguiente = nuevo;
+      // Cad final es el nuevo nodo
       cad->final = nuevo;
+    }
     else
-      nuevo->anterior->siguiente = nuevo;
+    {
+      // El siguiente a nuevo es loc->siguiente
+      nuevo->siguiente = loc->siguiente;
+      // El anterior a nuevo es loc
+      nuevo->anterior = loc;
+      // El siguiente a loc es nuevo
+      loc->siguiente = nuevo;
+      // El anterior de siguiente a loc es nuevo
+      nuevo->siguiente->anterior = nuevo;
+    }
   }
 } // fin insertar_despues
 
@@ -265,32 +296,38 @@ void remover_de_cadena(localizador &loc, cadena &cad)
 {
   if (!es_vacia_cadena(cad))
   {
-		// Evaluo si loc apunta al nodo que se encuetra al inicio o final de cadena
-		if (es_inicio_cadena(loc, cad) || es_final_cadena(loc, cad))
+		// Evaluo si loc apunta al nodo que se encuetra al inicio
+		if (es_inicio_cadena(loc, cad))
 		{
-			if (es_inicio_cadena(loc, cad))
-			{
-				// Se apunta el inicio de cadena al siguiente nodo
-				cad->inicio = siguiente(loc,cad);
-				// Libero la memoria del nodo que apunta loc
-				delete loc;
-			}
-			else //Es final cadena
-			{
-				// Se apunta el final de cadena al nodo anterior al que voy a eliminar
-				cad->final = anterior(loc, cad);
-				// Libero la memoria del nodo que apunta loc
-				delete loc;
-			}
+  		// Se apunta el inicio de cadena al siguiente nodo
+  		cad->inicio = loc->siguiente;
+  		// Libero la memoria del nodo que apunta loc
+  		liberar_info(loc->dato);
+  		delete loc;
+  		loc = NULL;
 		}
-		else // Loc se encuentra en un nodo que no es inicio ni final
+		else
 		{
-			// Apunto siguiente del nodo anterior al siguiente de loc
-			loc->anterior->siguiente = siguiente(loc, cad);
-			// Apunto anterior del nodo siguiente al anterior de loc
-			loc->siguiente->anterior = anterior(loc, cad);
-			// Libero la memoria del nodo que apunta loc
-			delete loc;
+  		if (es_final_cadena(loc, cad))
+  		{
+  				// Se apunta el final de cadena al nodo anterior al que voy a eliminar
+  				cad->final = loc->anterior;
+  				cad->final->siguiente = NULL;
+  				// Libero la memoria del nodo que apunta loc
+  				liberar_info(loc->dato);
+  				loc = NULL;
+  		}
+  		else // Loc se encuentra en un nodo que no es inicio ni final
+  		{
+  			// Apunto siguiente del nodo anterior al siguiente de loc
+  			loc->anterior->siguiente = loc->siguiente;
+  			// Apunto anterior del nodo siguiente al anterior de loc
+  			loc->siguiente->anterior = loc->anterior;
+  			// Libero la memoria del nodo que apunta loc
+  			liberar_info(loc->dato);
+  			delete loc;
+  			loc = NULL;
+  		}
 		}
   }
 } // fin remover_de_cadena
@@ -308,9 +345,9 @@ void liberar_cadena(cadena &cad)
 			// asigno en cursorAux el nodo a eliminar
 			localizador cursorAux = cursor;
 			// asigno el nodo siguiente en cursor
-			cursor = siguiente(cursor, cad);
+			cursor = cursor->siguiente;
 			// libero la memoria de nodo (cursorAux)
-			delete cursorAux;
+			liberar_nodo(cursorAux);
 		}
 		// Libero la memoria de cad
 		delete cad;
@@ -319,7 +356,9 @@ void liberar_cadena(cadena &cad)
 	{
 		// Libero cad
 		delete cad;
-	}	
+	}
+	// Libero memoria
+	cad = crear_cadena();
 } // fin liberar_cadena
 
 /*
@@ -363,12 +402,28 @@ void insertar_segmento_despues(cadena &sgm, localizador loc, cadena &cad)
 	// evaluo si cad es vacia
 	if (!es_vacia_cadena(cad))
 	{
-		// asigno como anterior del primer elemente de sgm, el nodo al que apunta cad
-		sgm->inicio->anterior = loc;
-		// asigno al nodo final de sgm, el siguiente de loc
-		sgm->final->siguiente = loc->siguiente;
-		// asigno como siguiente de loc, el primero de sgm
-		loc->siguiente = sgm->inicio;
+	  if (!es_final_cadena(loc,cad))
+	  {
+  		// asigno como anterior del primer elemente de sgm, el nodo al que apunta cad
+  		sgm->inicio->anterior = loc;
+  		// asigno al nodo final de sgm, el siguiente de loc
+  		sgm->final->siguiente = loc->siguiente;
+  		// asigno como siguiente de loc, el primero de sgm
+  		loc->siguiente = sgm->inicio;
+  		// Asigno como anterior a siguiente loc, el ultimo de segmento
+  		loc->siguiente->anterior = sgm->final;
+	  }
+  	else
+  	{
+  	  // asigno como anterior del primer elemente de sgm, el nodo al que apunta cad
+  		sgm->inicio->anterior = loc;
+  		// asigno al nodo final NULL
+  		sgm->final->siguiente = NULL;
+  		// asigno como siguiente de loc, el primero de sgm
+  		loc->siguiente = sgm->inicio;
+  		// Cambio cad final
+  		cad->final = sgm->final;
+  	}
 	} // cadena es vacia
 	else
 	{
@@ -398,29 +453,75 @@ cadena separar_segmento(localizador desde, localizador hasta, cadena &cad)
 		// asigno inicio y final de cadNueva
 		cadNueva->inicio = desde;
 		cadNueva->final = hasta;
-		
-		// Enlazo los nodos de cad, verificando si desde o hasta son inicio o final de cadena respectivamente
-		// Modifico el inicio y final de cad
-		if (es_inicio_cadena(desde, cad))
-		{
-		  // Como el segmente va desde el inicio, cad->inicio es el siguiente a donde finaliza el segmento
-		  cad->inicio = siguiente(hasta,cad);
-		  // Ajusto el noto anterior a inicio cad
-		  cad->inicio->anterior = NULL;
-		}
-		else
-		{
-		  // El inicio de cadena ahora será el nodo anterior a desde
-		  cad->inicio = anterior(desde,cad);
-		  // El nodo siguiente será el siguiente al final del segmento
-		  cad->inicio->siguiente = siguiente(hasta, cad);
-		}
-		desde->anterior->siguiente = hasta->siguiente;
-		hasta->siguiente->anterior = desde->anterior;
-		
-		//Modifico el inicio y y final de la cadena nueva
-		cadNueva->inicio->anterior = NULL;
-		cadNueva->final->siguiente = NULL;
+	  if (cad->inicio == cad->final) // Cadena de 1 elemento
+	  {
+	    cad->inicio = cad->final = NULL; // Queda una cadena vacia
+	  }
+	  else
+	  {
+  		//## Evaluacion de opciones segun desde
+  		if (es_inicio_cadena(desde,cad)) // # A) Desde es inicio de cadena
+  		{
+    		//## Evaluacion de opciones segun hasta
+    		if (es_inicio_cadena(hasta,cad)) // # 1) Hasta es inicio de cadena
+    		{
+    		  cad->inicio = hasta->siguiente;
+    		  cad->inicio->anterior = NULL;
+    		}
+    		else
+    		{
+    		  if (es_final_cadena(hasta, cad)) // # 2) hasta es final de cadena
+    		  {
+    		    // El segmento va a ser toda la cadena
+    		    cad->inicio = cad->final =  NULL;
+    		  }
+    		  else // # 3) Hasta se encuentra en el medio de la cadena
+    		  {
+    		    cad->inicio = hasta->siguiente;
+    		    cad->inicio->anterior = NULL;
+    		  }
+    		}
+  		}
+  		else
+  		{
+  		  if (es_final_cadena(desde, cad)) // # B) Desde es final de cadena
+  		  {
+  		    //## Evaluacion de opciones segun hasta
+      		//   # 1) Hasta es inicio de cadena, esto no va a pasar por precondición
+      		//   # 2) hasta es final de cadena
+      		if (es_final_cadena(hasta, cad))
+      		{// Desde es final y hasta tambien, segmento de 1 nodo
+      		  
+      		  cad->final = desde->anterior;
+      		  cad->final->siguiente = NULL;
+      		}
+      		// # 3) Hasta se encuentra en el medio de la cadena, esto no va a pasar por precondición
+  		  }
+  		  else // # C) Desde se encuentra en el medio de la cadena
+  		  {
+  		    //## Evaluacion de opciones segun hasta
+      		//   # 1) Hasta es inicio de cadena, esto no va a pasar por precondición
+      		//   # 2) hasta es final de cadena
+      		if (es_final_cadena(hasta, cad))
+      		{
+      		  // Cad inicio es el inicio inicial
+      		  // Arreglo el nodo de final
+      		  cad->final = desde->anterior;
+      		  cad->final->siguiente = NULL;
+      		}
+      		else // # 3) Hasta se encuentra en el medio de la cadena
+      		{
+      		  // Cad inicio es el inicio inicial y cad final el final inicial
+      		  // Arreglo los nodos desenlazados
+      		  desde->anterior->siguiente = hasta->siguiente;
+      		  hasta->siguiente->anterior = desde->anterior;
+      		}
+  		  }
+  		}
+  		// Arreglo el inicio y final del nuevo segmento
+  		cadNueva->inicio->anterior = NULL;
+		  cadNueva->final->siguiente = NULL;
+	  }
 	}
 	return cadNueva;
 } // fin separar_segmento
@@ -439,7 +540,7 @@ localizador siguiente_clave(int clave, localizador loc, cadena cad)
   else
   {
     while (es_localizador_cadena(loc) && numero_info(loc->dato) != clave)
-      loc = siguiente(loc, cad);
+      loc = loc->siguiente;
     return loc;
   }
 } // fin siguiente_clave
@@ -456,7 +557,7 @@ localizador anterior_clave(int clave, localizador loc, cadena cad)
   if (!es_vacia_cadena(cad))
   {
     while (localizador_pertenece_a_cadena(loc,cad) && numero_info(loc->dato) != clave)
-      loc = anterior(loc, cad);
+      loc = loc->anterior;
     return loc;
   }
   else
@@ -592,9 +693,9 @@ void imprimir_cadena(cadena cad)
   if (!es_vacia_cadena(cad))
   {
     localizador cursor = inicio_cadena(cad);
-    while (localizador_pertenece_a_cadena(cursor, cad))
+    while (es_localizador_cadena(cursor))
     {
-      printf("(%d", numero_info(cursor->dato));
+      printf("(%d,", numero_info(cursor->dato));
       escribir_texto(texto_info(cursor->dato));
       printf(")");
       cursor = siguiente(cursor, cad);

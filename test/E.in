@@ -1,0 +1,9 @@
+insertar_cadena (0,primero) (1,gallo) (2,perro) (3,perro) .
+filtrado_cadena 2 <
+filtrado_cadena 2 =
+filtrado_cadena 2 >
+insertar_cadena (0,dragon) (1,tigre) .
+filtrado_cadena 16 =
+filtrado_cadena 0 =
+liberar_cadena
+Fin

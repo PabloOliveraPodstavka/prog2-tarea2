@@ -1,0 +1,6 @@
+insertar_cadena (0,primero) .
+insertar_cadena (1,sol) (2,mercurio) (3,venus) (4,tierra) .
+recorrido
+insertar_cadena (5,marte) .
+recorrido
+Fin

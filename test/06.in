@@ -1,0 +1,8 @@
+insertar_cadena (0,primero) (16,marzo) (13,abril) (27,abril) .
+filtrado_cadena 16 <
+filtrado_cadena 16 =
+filtrado_cadena 16 >
+insertar_cadena (0,otro) (16,enero) .
+filtrado_cadena 16 =
+filtrado_cadena 0 =
+Fin

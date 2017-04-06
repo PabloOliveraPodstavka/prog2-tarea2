@@ -1,0 +1,8 @@
+insertar_comienzo (16,marzo) .
+insertar_final (13,abril) .
+insertar_antes 13 (27,abril) .
+insertar_despues 27 (18,julio) .
+insertar_antes 16 (4,agosto) .
+insertar_despues 13 (5,febrero) .
+insertar_despues 4 (8,agosto) .
+Fin

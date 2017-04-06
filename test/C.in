@@ -1,0 +1,4 @@
+insertar_cadena (20,conejo) (10,mono) (30,mono) (15,caballo) .
+modificar_cadena 10 30
+modificar_cadena 15 20
+Fin

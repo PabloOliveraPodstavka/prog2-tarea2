@@ -28,7 +28,7 @@
 all: principal
 
 # Objetivos que no son archivos.
-.PHONY: all clean_bin clean_test clean testing
+.PHONY: all clean_bin clean_test clean testing uso_memoria
 
 
 # directorios 
@@ -75,6 +75,11 @@ ejemplos_letra:ejemplos_letra.cpp $(OS)
 test_info:test_info.cpp  $(ODIR)/utils.o $(ODIR)/texto.o $(ODIR)/info.o
 	$(CC) $(CCFLAGS) $^ -o $@
 
+test_cadena:test_cadena.cpp  $(OS)
+	$(CC) $(CCFLAGS) $^ -o $@
+
+test_uso_cadena:test_uso_cadena.cpp  $(OS)
+	$(CC) $(CCFLAGS) $^ -o $@
 
 
 # obtener las salidas
@@ -85,10 +90,17 @@ $(TESTDIR)/ejemplos_letra.sal:ejemplos_letra
 $(TESTDIR)/test_info.sal:$(TESTDIR)/test_info.in test_info
 	./test_info < $<  > $@
 
+# correr test_cadena
+correr_test_cadena:test_cadena
+	./$^
+
+# correr test_cadena
+correr_test_uso_cadena:test_uso_cadena
+	./$^
 
 
 # casos de prueba
-CASOS = 
+CASOS = 01 02 03 04 05 06 07 08 09 A B C D E F
 
 # archivos, con directorio y extensión
 INS=$(CASOS:%=$(TESTDIR)/%.in)
@@ -99,6 +111,12 @@ DIFFS=$(CASOS:%=$(TESTDIR)/%.diff)
 $(SALS):$(EJECUTABLE)
 $(TESTDIR)/%.sal:$(TESTDIR)/%.in
 	./$(EJECUTABLE) < $< > $@ 
+
+# test de uso de memoria. /usr/bin/time -f%M imprime la máxima cantidad 
+# de memoria usada
+uso_memoria:$(EJECUTABLE)
+	@/usr/bin/time -f"Test de uso de memoria. Máximo aceptable: 5000.\
+	 Usada: "%M ./principal < test/00.in > /dev/null
 
 
 # cada .diff depende de su .out y de su .sal
@@ -120,7 +138,7 @@ $(TESTDIR)/%.sal:$(TESTDIR)/%.in
 # $(TESTDIR) y lo asigna a $(LST_ERR).
 # Si el tamaño de $(LST_ERR) no es cero imprime los casos con error.
 # Con `sed` se elimina el nombre de directorio y la extensión. 
-testing:$(DIFFS) $(TESTDIR)/ejemplos_letra.diff $(TESTDIR)/test_info.diff
+testing:$(DIFFS) $(TESTDIR)/ejemplos_letra.diff $(TESTDIR)/test_info.diff uso_memoria
 	@LST_ERR=$$(find $(TESTDIR) -name *.diff -size +0c -print);             \
 	if [ -n "$${LST_ERR}" ];                                                \
 	then                                                                    \

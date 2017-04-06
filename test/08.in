@@ -1,0 +1,7 @@
+insertar_cadena (0,primero) .
+insertar_cadena (16,marzo) .
+insertar_cadena (13,abril) .
+insertar_cadena (13,abril) (27,abril) .
+liberar_cadena
+insertar_cadena (13,abril) (27,abril) .
+Fin
