@@ -135,7 +135,7 @@ localizador siguiente(localizador loc, cadena cad)
  */
 localizador anterior(localizador loc, cadena cad)
 {
-  if (!es_vacia_cadena(cad) and localizador_pertenece_a_cadena(loc, cad))
+  if (!es_vacia_cadena(cad) && localizador_pertenece_a_cadena(loc, cad))
   {
     return loc->anterior;
   }
@@ -296,7 +296,7 @@ void remover_de_cadena(localizador &loc, cadena &cad)
 {
   if (!es_vacia_cadena(cad))
   {
-		// Evaluo si loc apunta al nodo que se encuetra al inicio
+		// Evaluo si loc apunta al nodo que se encuentra al inicio
 		if (es_inicio_cadena(loc, cad))
 		{
   		// Se apunta el inicio de cadena al siguiente nodo
@@ -351,14 +351,14 @@ void liberar_cadena(cadena &cad)
 		}
 		// Libero la memoria de cad
 		delete cad;
+		cad = NULL;
 	}
 	else // cad es vacia
 	{
 		// Libero cad
 		delete cad;
+		cad = NULL;
 	}
-	// Libero memoria
-	cad = crear_cadena();
 } // fin liberar_cadena
 
 /*
@@ -375,12 +375,6 @@ cadena segmento_cadena(localizador desde, localizador hasta, cadena cad)
 	{
     while (desde != siguiente(hasta, cad))
     {
-      // ERROR: compartiría memoria
-      // info_t info = desde->dato;
-	  
-      // ERROR: compartiría memoria
-      // info_t info = crear_info(numero_info(desde->dato),
-      // texto_info(desde->dato));
       info_t info = crear_info(numero_info(desde->dato), copiar_texto(texto_info(desde->dato)));
       insertar_despues(info, final_cadena(res), res);
       desde = siguiente(desde, cad);

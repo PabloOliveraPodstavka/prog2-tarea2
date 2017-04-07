@@ -270,17 +270,17 @@ void ordenar(cadena &cad) {
       //localizador cad_ord_aux = cad_ord;
       localizador ant = anterior(cad_ord, cad); //navego hacia la izquierda hasta encontrar un ordenado
   
-	bool ordenado = false;
-	while(es_localizador_cadena(ant) && !ordenado){
-		//si el anterior es mayor a cad_ord los swapeo
-		if(numero_info(info_cadena(ant, cad)) > numero_info(info_cadena(cad_ord, cad))){
-			intercambiar(ant, cad_ord, cad);	
-			cad_ord = ant;		
-		}else{
-			ordenado = true;
-		}
-		ant = anterior(ant, cad);
-	}      
+    	bool ordenado = false;
+    	while(es_localizador_cadena(ant) && !ordenado){
+    		//si el anterior es mayor a cad_ord los swapeo
+    		if(numero_info(info_cadena(ant, cad)) > numero_info(info_cadena(cad_ord, cad))){
+    			intercambiar(ant, cad_ord, cad);	
+    			cad_ord = ant;		
+    		}else{
+    			ordenado = true;
+    		}
+    		ant = anterior(ant, cad);
+    	}      
       cad_ord = siguiente(cad_ord, cad); // avanzo un lugar     
     }
   }
